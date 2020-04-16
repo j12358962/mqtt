@@ -74,7 +74,6 @@ int MQTT_nodeInit(string deveiceName){
 			//format: {status: boolean, mold_number: int, good: int, defective: int
 			for (int i = 1; i <= 8; ++i)
 			{
-				if(i != 8){
 				initString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
 	                "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_number\": {\"TID\": 3,\"Dsc\": \"模次資料\"," +
 	                "\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
@@ -83,17 +82,10 @@ int MQTT_nodeInit(string deveiceName){
 	                "\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," +
 	                "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
 	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},";
-	            } else {
-	            	initString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
-	                "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_Number\": {\"TID\": 3,\"Dsc\": \"模次資料\"," +
-	                "\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
-	                "},\"Channel_" + to_string(i) + "_non-defective\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) +"_defective\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0," +
-	                "\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," +
-	                "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}";
-	            }
+
  			}
+ 			
+ 			initString = initString.substr(0, initString.size()-1);
  			initString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
  			cout<< initString <<endl;
 
