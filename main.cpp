@@ -16,22 +16,22 @@ int main(){
   const string deviceName = "device-" + name;
 
   // 初始化
-  // MQTT_nodeInit(deviceName);
+  MQTT_nodeInit(deviceName);
 
   // 欲更新的測點名稱
-  string measurePoint1 = "Channel_1_non-defective";
-  string measurePoint2 = "Channel_2_non-defective";
+  // string measurePoint1 = "Channel_1_non-defective";
+  // string measurePoint2 = "Channel_2_non-defective";
 
   // 要傳給測點的內容
-  string message1 =  "\"5\"";
-  string message2 =  "\"3\"";
+  // string message1 =  "\"5\"";
+  // string message2 =  "\"3\"";
 
-  // 將要傳的訊息做成符合WebAccess格式的字串
-  string msgs =  MQTT_makeMessage(measurePoint1, message1);
-  msgs += MQTT_makeMessage(measurePoint2, message2);
+  // // 將要傳的訊息做成符合WebAccess格式的字串
+  // string msgs =  MQTT_makeMessage(measurePoint1, message1);
+  // msgs += MQTT_makeMessage(measurePoint2, message2);
 
-  將剛剛做好的字串傳送
-  MQTT_dataPublish(ADDRESS, DATATOPIC, USERNAME, PASSWORD, deviceName, msgs);
+  // // 將剛剛做好的字串傳送
+  // MQTT_dataPublish(ADDRESS, DATATOPIC, USERNAME, PASSWORD, deviceName, msgs);
 
   
   return 0;

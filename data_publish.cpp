@@ -68,29 +68,31 @@ int MQTT_nodeInit(string deveiceName){
 			// Get a timestamp and format as a string
 			time_t t = system_clock::to_time_t(system_clock::now());
 			strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
-			string initString = string("{\"d\": {\"" + deveiceName +"\": {\"TID\": 1,\"Hbt\": 60,\"BID\": \" \",\"UTg\":{");
+			string intInitString = string("{\"d\": {\"" + deveiceName +"\": {\"TID\": 1,\"Hbt\": 60,\"BID\": \" \",\"UTg\":{");
 			// Create the payload as a text CSV string
 
 			//format: {status: boolean, mold_number: int, good: int, defective: int
 			for (int i = 1; i <= 8; ++i)
 			{
-				initString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
-	                "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_number\": {\"TID\": 3,\"Dsc\": \"模次資料\"," +
+				intInitString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"機台狀態\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
+	                "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_number\": {\"TID\": 3,\"Dsc\": \"模次號碼\"," +
 	                "\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
-	                "},\"Channel_" + to_string(i) + "_non-defective\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) +"_defective\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0," +
+	                "},\"Channel_" + to_string(i) + "_non-defective\": {\"TID\": 3,\"Dsc\": \"良品數量\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
+	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) +"_defective\": {\"TID\": 3,\"Dsc\": \"不良品數量\",\"Ary\": 0," +
 	                "\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," +
-	                "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"模次資料\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
+	                "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"最後5模不良品\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
+	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," + "\"Channel_" + to_string(i) + 
+	                "_SPC_file\": {\"TID\": 3,\"Dsc\": \"SPC檔案路徑\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
 	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},";
 
  			}
- 			
- 			initString = initString.substr(0, initString.size()-1);
- 			initString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
- 			cout<< initString <<endl;
+
+ 			intInitString = intInitString.substr(0, intInitString.size()-1);
+ 			intInitString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
+ 			cout<< intInitString <<endl;
 
 			// Publish to the topic
-			top.publish(std::move(initString));
+			top.publish(std::move(intInitString));
 
 			
 			tm += PERIOD;
@@ -123,11 +125,11 @@ string MQTT_makeMessage(string measuringPoint, string measuringPointValue){
 	strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
 
 
-	string message;
-	message =  message + "\"" + measuringPoint + "\"";
-	message =  message + ":"+ measuringPointValue + ",";
+	string stringMessage;
+	stringMessage =  stringMessage + "\"" + measuringPoint + "\"";
+	stringMessage =  stringMessage + ":"+ measuringPointValue + ",";
 
-  return message;
+  return stringMessage;
 }
 
 int MQTT_dataPublish(string addr, string topic, string username, string password, string deveiceName, string msg){
@@ -145,7 +147,7 @@ int MQTT_dataPublish(string addr, string topic, string username, string password
 	mqtt::topic top(cli, topic, QOS, true);
 
 	msg = msg.substr(0, msg.size()-1);
-	string message = "{\"d\":{\"" + deveiceName + "\":{\"Val\":{";
+	string stringMessage = "{\"d\":{\"" + deveiceName + "\":{\"Val\":{";
 	try {
 		// Connect to the MQTT broker
 		cout << "Connecting to server '" << addr << "'..." << flush;
@@ -167,13 +169,13 @@ int MQTT_dataPublish(string addr, string topic, string username, string password
 
 			// Create the payload as a text CSV string
 			// Publish to the topic
-		message += msg;
+		stringMessage += msg;
 		string timestamp = "}}}, \"ts\":\"" + string(tmbuf) + "\"}";
-		message += timestamp;
+		stringMessage += timestamp;
 
-		cout << message << endl;
+		cout << stringMessage << endl;
 
-		top.publish(std::move(message));
+		top.publish(std::move(stringMessage));
 
 		tm += PERIOD;
 
