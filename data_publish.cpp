@@ -35,7 +35,7 @@ const string password {"admin"};
 
 const string name(getenv("USER"));
 
-int MQTT_nodeInit(string deveiceName){
+int MQTT_nodeInit(string stringDeviceName){
 	string address = DFLT_ADDRESS;
 	mqtt::async_client cli(address, "", MAX_BUFFERED_MSGS, PERSIST_DIR);
 
@@ -63,41 +63,39 @@ int MQTT_nodeInit(string deveiceName){
 		auto tm = steady_clock::now();
 
 			// Pace the samples to the desired rate
-			this_thread::sleep_until(tm);
+		this_thread::sleep_until(tm);
 
-			// Get a timestamp and format as a string
-			time_t t = system_clock::to_time_t(system_clock::now());
-			strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
-			string intInitString = string("{\"d\": {\"" + deveiceName +"\": {\"TID\": 1,\"Hbt\": 60,\"BID\": \" \",\"UTg\":{");
-			// Create the payload as a text CSV string
+		// Get a timestamp and format as a string
+		time_t t = system_clock::to_time_t(system_clock::now());
+		strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
+		string intInitString = string("{\"d\": {\"" + stringDeviceName +"\": {\"TID\": 1,\"Hbt\": 60,\"BID\": \" \",\"UTg\":{");
+		// Create the payload as a text CSV string
 
 			//format: {status: boolean, mold_number: int, good: int, defective: int
-			for (int i = 1; i <= 8; ++i)
-			{
-				intInitString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"機台狀態\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
-	                "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_number\": {\"TID\": 3,\"Dsc\": \"模次號碼\"," +
-	                "\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
-	                "},\"Channel_" + to_string(i) + "_non-defective\": {\"TID\": 3,\"Dsc\": \"良品數量\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) +"_defective\": {\"TID\": 3,\"Dsc\": \"不良品數量\",\"Ary\": 0," +
-	                "\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," +
-	                "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"最後5模不良品\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," + "\"Channel_" + to_string(i) + 
-	                "_SPC_file\": {\"TID\": 3,\"Dsc\": \"SPC檔案路徑\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	                "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},";
+		for (int i = 1; i <= 8; ++i)
+		{
+			intInitString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"機台狀態\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
+	            "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_number\": {\"TID\": 3,\"Dsc\": \"模次號碼\"," +
+	            "\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
+	            "},\"Channel_" + to_string(i) + "_non-defective\": {\"TID\": 3,\"Dsc\": \"良品數量\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
+	            "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) +"_defective\": {\"TID\": 3,\"Dsc\": \"不良品數量\",\"Ary\": 0," +
+	            "\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," +
+	            "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"最後5模不良品\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
+	            "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," + "\"Channel_" + to_string(i) + 
+	            "_SPC_file\": {\"TID\": 3,\"Dsc\": \"SPC檔案路徑\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
+	            "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},";
+ 		}
 
- 			}
-
- 			intInitString = intInitString.substr(0, intInitString.size()-1);
- 			intInitString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
- 			cout<< intInitString <<endl;
+		intInitString = intInitString.substr(0, intInitString.size()-1);
+		intInitString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
+		cout<< intInitString <<endl;
 
 			// Publish to the topic
-			top.publish(std::move(intInitString));
+		top.publish(std::move(intInitString));
 
-			
-			tm += PERIOD;
+		tm += PERIOD;
 
-			cout << "OK!" << '\n';
+		cout << "OK!" << '\n';
 		// Disconnect
 		cout << "\nDisconnecting..." << flush;
 		cli.disconnect()->wait();
@@ -111,7 +109,7 @@ int MQTT_nodeInit(string deveiceName){
  	return 0;
 }
 
-string MQTT_makeMessage(string measuringPoint, string measuringPointValue){
+string MQTT_makeMessage(string stringMeasuringPoint, string stringMeasuringPointValue){
 	char tmbuf[32];
 	unsigned nsample = 0;
 	// The time at which to reads the next sample, starting now
@@ -124,33 +122,33 @@ string MQTT_makeMessage(string measuringPoint, string measuringPointValue){
 	time_t t = system_clock::to_time_t(system_clock::now());
 	strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
 
+	string stringPayload;
 
-	string stringMessage;
-	stringMessage =  stringMessage + "\"" + measuringPoint + "\"";
-	stringMessage =  stringMessage + ":"+ measuringPointValue + ",";
+	stringPayload =  stringPayload + "\"" + stringMeasuringPoint + "\"";
+	stringPayload =  stringPayload + ":"+ stringMeasuringPointValue + ",";
 
-  return stringMessage;
+  return stringPayload;
 }
 
-int MQTT_dataPublish(string addr, string topic, string username, string password, string deveiceName, string msg){
+int MQTT_dataPublish(string stringADDR, string stringTopic, string stringUsername, string stringPassword, string stringDeviceName, string stringMessage){
 	cout<<PERSIST_DIR<<endl;
-	mqtt::async_client cli(addr, "", MAX_BUFFERED_MSGS, PERSIST_DIR);
+	mqtt::async_client cli(stringADDR, "", MAX_BUFFERED_MSGS, PERSIST_DIR);
 
 	mqtt::connect_options connOpts;
 	connOpts.set_keep_alive_interval(MAX_BUFFERED_MSGS * PERIOD);
 	connOpts.set_clean_session(true);
 	connOpts.set_automatic_reconnect(true);
-	connOpts.set_user_name(username);
-	connOpts.set_password(password);
+	connOpts.set_user_name(stringUsername);
+	connOpts.set_password(stringPassword);
 	// Create a topic object. This is a conventience since we will
 	// repeatedly publish messages with the same parameters.
-	mqtt::topic top(cli, topic, QOS, true);
+	mqtt::topic top(cli, stringTopic, QOS, true);
 
-	msg = msg.substr(0, msg.size()-1);
-	string stringMessage = "{\"d\":{\"" + deveiceName + "\":{\"Val\":{";
+	stringMessage = stringMessage.substr(0, stringMessage.size()-1);
+	string stringPayload = "{\"d\":{\"" + stringDeviceName + "\":{\"Val\":{";
 	try {
 		// Connect to the MQTT broker
-		cout << "Connecting to server '" << addr << "'..." << flush;
+		cout << "Connecting to server '" << stringADDR << "'..." << flush;
 		cli.connect(connOpts)->wait();
 		cout << "OK\n" << endl;
 
@@ -167,15 +165,15 @@ int MQTT_dataPublish(string addr, string topic, string username, string password
 		time_t t = system_clock::to_time_t(system_clock::now());
 		strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
 
-			// Create the payload as a text CSV string
-			// Publish to the topic
-		stringMessage += msg;
-		string timestamp = "}}}, \"ts\":\"" + string(tmbuf) + "\"}";
-		stringMessage += timestamp;
+		// Create the payload as a text CSV string
+		// Publish to the topic
+		stringPayload += stringMessage;
+		string stringTimestamp = "}}}, \"ts\":\"" + string(tmbuf) + "\"}";
+		stringPayload += stringTimestamp;
 
-		cout << stringMessage << endl;
+		cout << stringPayload << endl;
 
-		top.publish(std::move(stringMessage));
+		top.publish(std::move(stringPayload));
 
 		tm += PERIOD;
 
