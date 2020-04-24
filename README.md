@@ -36,7 +36,7 @@ Pull 我的程式碼
 https://github.com/j12358962/mqtt.git
 ```
 
-# 
+#
 ### 2. 使用 g++ 來compile 並運行
 ```
 g++ main.cpp -o main -l paho-mqttpp3 -l paho-mqtt3as
@@ -52,14 +52,12 @@ g++ main.cpp -o main -l paho-mqttpp3 -l paho-mqtt3as
 輸入WebAccess中的設備名，若是這個設備中沒有測點，則建立40個測點，若已存在測點，則覆蓋，其中為8個channel， 每個channel中有5個專屬的測點。
 測點的意思分別代表:
 ```
-1. Channel_x_status: Channel_通道號碼x_機台狀態
-2. Channel_x_mold_number: Channel_通道號碼x_模次號碼
-3. Channel_x_non-defective: Channel_通道號碼x_良品數量
-4. Channel_x_defective: Channel_通道號碼x_不良品數量
-5. Channel_x_last_defective_five: Channel_通道號碼x_最後5模不良品
-6. Channel_x_last_SPC_file: Channel_通道號碼x_SPC檔案路徑
+1. Channel_x_non-defective: Channel_通道號碼x_良品數量
+2. Channel_x_defective: Channel_通道號碼x_不良品數量
+3. Channel_x_last_defective_five: Channel_通道號碼x_最後5模不良品
+4. Mold_number: 8個channel的模次號碼
 note1: 最後5模不良品為一個不良品號碼的陣列，如[2,56,78,100,123]
-note2: 會建立位址如 ITRI_scada_{deviceName}_Channel_x_status的測點
+note2: 會建立位址如 ITRI_scada_{deviceName}_Channel_x_non-defective的測點
 ```
 
 ### 2. string MQTT_makeMessage(string measuringPoint, string mesuringPointValue)
@@ -69,4 +67,3 @@ note2: 會建立位址如 ITRI_scada_{deviceName}_Channel_x_status的測點
 ### 3. int MQTT_dataPublish(string addr, string topic, string username, string password, string deveiceName, string msg)
 
 輸入(MQTT broker的位址, MQTT的topic, 登入MQTT的username, 登入MQTT的password, WebAccess的設備名, 由 MQTT_makeMessage做好的字串)後，會將測點的資料更新。
-

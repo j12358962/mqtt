@@ -68,30 +68,27 @@ int MQTT_nodeInit(string stringDeviceName){
 		// Get a timestamp and format as a string
 		time_t t = system_clock::to_time_t(system_clock::now());
 		strftime(tmbuf, sizeof(tmbuf), "%FT%TZ", localtime(&t));
-		string intInitString = string("{\"d\": {\"" + stringDeviceName +"\": {\"TID\": 1,\"Hbt\": 60,\"BID\": \" \",\"UTg\":{");
+		string stringInitString = string("{\"d\": {\"" + stringDeviceName +"\": {\"TID\": 1,\"Hbt\": 60,\"BID\": \" \",\"UTg\":{");
 		// Create the payload as a text CSV string
 
 			//format: {status: boolean, mold_number: int, good: int, defective: int
 		for (int i = 1; i <= 8; ++i)
 		{
-			intInitString +=  "\"Channel_"+ to_string(i) +"_status\": {\"TID\": 3,\"Dsc\": \"機台狀態\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0," +
-	            "\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) + "_mold_number\": {\"TID\": 3,\"Dsc\": \"模次號碼\"," +
-	            "\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
+			stringInitString +=  string("\"Mold_number\": {\"TID\": 3,\"Dsc\": \"模次號碼\",") +
+							"\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\", \"TypeWA\": \"9\",\"Log\": 1" +
 	            "},\"Channel_" + to_string(i) + "_non-defective\": {\"TID\": 3,\"Dsc\": \"良品數量\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
 	            "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},\"Channel_" + to_string(i) +"_defective\": {\"TID\": 3,\"Dsc\": \"不良品數量\",\"Ary\": 0," +
 	            "\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0,\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," +
 	            "\"Channel_" + to_string(i) + "_last_defective_five\": {\"TID\": 3,\"Dsc\": \"最後5模不良品\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
-	            "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1}," + "\"Channel_" + to_string(i) + 
-	            "_SPC_file\": {\"TID\": 3,\"Dsc\": \"SPC檔案路徑\",\"Ary\": 0,\"RO\": 0,\"SH\": 60,\"SL\": 0,\"Alm\": 0," +
 	            "\"EU\": \"text\",\"TypeWA\": \"9\",\"Log\": 1},";
  		}
 
-		intInitString = intInitString.substr(0, intInitString.size()-1);
-		intInitString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
-		cout<< intInitString <<endl;
+		stringInitString = stringInitString.substr(0, stringInitString.size()-1);
+		stringInitString += "},\"DTg\": null,\"Dsc\":\"\"}},\"ts\":\"" + string(tmbuf) + "\"}";
+		cout<< stringInitString <<endl;
 
 			// Publish to the topic
-		top.publish(std::move(intInitString));
+		top.publish(std::move(stringInitString));
 
 		tm += PERIOD;
 
